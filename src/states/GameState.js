@@ -28,6 +28,7 @@ class GameState extends Phaser.State {
   update() {
     this.hitPaddle = this.game.physics.arcade.collide(this.ball, this.paddle);
     this.hitBrick = this.game.physics.arcade.collide(this.ball, this.bricks);
+
     this.paddle.body.velocity.x = 0;
 
     const velocity = 500;
@@ -36,6 +37,10 @@ class GameState extends Phaser.State {
       this.paddle.body.velocity.x = -velocity;
     } else if (this.cursors.right.isDown) {
       this.paddle.body.velocity.x = velocity;
+    }
+
+    if (this.ball.body.blocked.down) {
+      this.reset();
     }
   }
 
@@ -66,13 +71,13 @@ class GameState extends Phaser.State {
   }
 
   createBall() {
-    const ballVelocity = 300;
+    this.ballVelocity = 300;
 
     this.ball = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY, 'ball');
     this.game.physics.arcade.enable(this.ball);
     this.ball.body.collideWorldBounds = true;
     this.ball.body.bounce.setTo(1, 1);
-    this.ball.body.velocity.y = ballVelocity;
+    this.ball.body.velocity.y = this.ballVelocity;
   }
 
   createPaddle() {
@@ -83,14 +88,24 @@ class GameState extends Phaser.State {
 
     const offsetY = 200;
 
-    const paddleX = this.game.world.centerX - (paddleInfo.width / 2);
-    const paddleY = this.game.world.centerY + offsetY;
+    this.initialPaddleX = this.game.world.centerX - (paddleInfo.width / 2);
+    this.initialPaddleY = this.game.world.centerY + offsetY;
 
-    this.paddle = this.game.add.sprite(paddleX, paddleY, 'paddle');
+    this.paddle = this.game.add.sprite(this.initialPaddleX, this.initialPaddleY, 'paddle');
 
     this.game.physics.arcade.enable(this.paddle);
     this.paddle.body.collideWorldBounds = true;
     this.paddle.body.immovable = true;
+  }
+
+  reset() {
+    this.ball.body.x = this.game.world.centerX;
+    this.ball.body.y = this.game.world.centerY;
+    this.ball.body.velocity.x = 0;
+    this.ball.body.velocity.y = this.ballVelocity;
+
+    this.paddle.body.x = this.initialPaddleX;
+    this.paddle.body.y = this.initialPaddleY;
   }
 }
 
