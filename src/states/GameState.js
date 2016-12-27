@@ -1,5 +1,3 @@
-import RainbowText from 'objects/RainbowText';
-
 class GameState extends Phaser.State {
   preload() {
     this.game.load.image('ball', 'assets/ballGrey.png');
@@ -21,6 +19,7 @@ class GameState extends Phaser.State {
     };
 
     this.createBricks();
+    this.createBall();
   }
 
   createBricks() {
@@ -47,6 +46,11 @@ class GameState extends Phaser.State {
         brick.body.immovable = true;
       }
     }
+  }
+
+  createBall() {
+    const ball = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY, 'ball');
+    this.game.physics.arcade.enable(ball);
   }
 }
 
