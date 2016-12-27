@@ -27,6 +27,7 @@ class GameState extends Phaser.State {
 
   update() {
     this.hitPaddle = this.game.physics.arcade.collide(this.ball, this.paddle);
+    this.hitBrick = this.game.physics.arcade.collide(this.ball, this.bricks);
     this.paddle.body.velocity.x = 0;
 
     const velocity = 500;
@@ -65,8 +66,12 @@ class GameState extends Phaser.State {
   }
 
   createBall() {
+    const ballVelocity = 300;
+
     this.ball = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY, 'ball');
     this.game.physics.arcade.enable(this.ball);
+    this.ball.body.collideWorldBounds = true;
+    this.ball.body.velocity.y = ballVelocity;
   }
 
   createPaddle() {
@@ -83,6 +88,8 @@ class GameState extends Phaser.State {
     this.paddle = this.game.add.sprite(paddleX, paddleY, 'paddle');
 
     this.game.physics.arcade.enable(this.paddle);
+    this.paddle.body.collideWorldBounds = true;
+    this.paddle.body.immovable = true;
   }
 }
 
