@@ -1,6 +1,11 @@
 import RainbowText from 'objects/RainbowText';
 
 class GameState extends Phaser.State {
+  preload() {
+    this.game.load('ball', 'assets/ballGrey.png');
+    this.game.load('paddle', 'assets/paddleBlu.png');
+  }
+
   create () {
 		const center = {
       x: this.game.world.centerX,
