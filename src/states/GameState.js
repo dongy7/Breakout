@@ -101,7 +101,7 @@ class GameState extends Phaser.State {
     }
 
     if (this.ball.body.blocked.down) {
-      this.reset();
+      this.reset(false);
     }
   }
 
@@ -181,24 +181,46 @@ class GameState extends Phaser.State {
     this.scoreText = this.game.add.bitmapText(0, 0, 'carrier_command', `Score: ${this.props.score}`, 16);
   }
 
-  reset() {
+  reset(shouldRestart) {
     // reset ball props
     this.ball.body.x = this.props.ballProps.initialX;
     this.ball.body.y = this.props.ballProps.initialY;
     this.ball.body.velocity.x = this.props.ballProps.initialVelocityX;
     this.ball.body.velocity.y = this.props.ballProps.initialVelocityY;
 
-
     // reset paddle props
     this.paddle.body.x = this.props.paddleProps.initialX;
     this.paddle.body.y = this.props.paddleProps.initialY;
 
-    // remove a life
-    this.props.lives--;
-    const heart = this.props.hearts.pop();
-    if (heart) {
-      heart.kill();
+    if (shouldRestart) {
+      this.props.lives = 3;
+      this.createHearts();
+    } else {
+      // remove a life
+      this.props.lives--;
+      const heart = this.props.hearts.pop();
+      if (heart) {
+        heart.kill();
+      }
+
+      if (this.props.lives === 0) {
+        this.endGame();
+      }
     }
+  }
+
+  endGame() {
+    this.ball.body.velocity.y = 0;
+    this.endText = this.game.add.bitmapText(
+      this.props.center.x, this.props.center.y, 'carrier_command', 'Game Over', 32
+    );
+    this.endText.anchor.setTo(0.5, 0.5);
+    this.game.input.onDown.addOnce(this.restart, this);
+  }
+
+  restart() {
+    this.endText.destroy();
+    this.reset(true);
   }
 }
 
