@@ -21,6 +21,21 @@ class GameState extends Phaser.State {
     this.createBricks();
     this.createBall();
     this.createPaddle();
+
+    this.cursors = this.game.input.keyboard.createCursorKeys();
+  }
+
+  update() {
+    this.hitPaddle = this.game.physics.arcade.collide(this.ball, this.paddle);
+    this.paddle.body.velocity.x = 0;
+
+    const velocity = 500;
+
+    if (this.cursors.left.isDown) {
+      this.paddle.body.velocity.x = -velocity;
+    } else if (this.cursors.right.isDown) {
+      this.paddle.body.velocity.x = velocity;
+    }
   }
 
   createBricks() {
@@ -38,20 +53,20 @@ class GameState extends Phaser.State {
       'purpleBlock',
     ];
 
-    const bricks = this.game.add.group();
-    bricks.enableBody = true;
+    this.bricks = this.game.add.group();
+    this.bricks.enableBody = true;
 
     for (let i = 0; i < brickTypes.length; i++) {
       for (let j = 0; j < this.game.width; j += brickInfo.width) {
-        const brick = bricks.create(j, i * brickInfo.height + brickInfo.paddingTop, brickTypes[i]);
+        const brick = this.bricks.create(j, i * brickInfo.height + brickInfo.paddingTop, brickTypes[i]);
         brick.body.immovable = true;
       }
     }
   }
 
   createBall() {
-    const ball = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY, 'ball');
-    this.game.physics.arcade.enable(ball);
+    this.ball = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY, 'ball');
+    this.game.physics.arcade.enable(this.ball);
   }
 
   createPaddle() {
@@ -65,9 +80,9 @@ class GameState extends Phaser.State {
     const paddleX = this.game.world.centerX - (paddleInfo.width / 2);
     const paddleY = this.game.world.centerY + offsetY;
 
-    const paddle = this.game.add.sprite(paddleX, paddleY, 'paddle');
+    this.paddle = this.game.add.sprite(paddleX, paddleY, 'paddle');
 
-    this.game.physics.arcade.enable(paddle);
+    this.game.physics.arcade.enable(this.paddle);
   }
 }
 
