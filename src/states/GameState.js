@@ -20,6 +20,7 @@ class GameState extends Phaser.State {
 
     this.createBricks();
     this.createBall();
+    this.createPaddle();
   }
 
   createBricks() {
@@ -51,6 +52,22 @@ class GameState extends Phaser.State {
   createBall() {
     const ball = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY, 'ball');
     this.game.physics.arcade.enable(ball);
+  }
+
+  createPaddle() {
+    const paddleInfo = {
+      width: 104,
+      height: 24,
+    };
+
+    const offsetY = 200;
+
+    const paddleX = this.game.world.centerX - (paddleInfo.width / 2);
+    const paddleY = this.game.world.centerY + offsetY;
+
+    const paddle = this.game.add.sprite(paddleX, paddleY, 'paddle');
+
+    this.game.physics.arcade.enable(paddle);
   }
 }
 
