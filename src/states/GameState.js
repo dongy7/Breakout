@@ -10,42 +10,15 @@ class GameState extends Phaser.State {
     this.game.load.image('greyBlock', 'assets/element_grey_square_glossy.png');
   }
 
-  create() {
-    this.game.physics.startSystem(Phaser.Physics.ARCADE);
+  initializeProps() {
+    const props = {};
 
 		const center = {
       x: this.game.world.centerX,
       y: this.game.world.centerY
     };
 
-    this.createBricks();
-    this.createBall();
-    this.createPaddle();
-
-    this.cursors = this.game.input.keyboard.createCursorKeys();
-  }
-
-  update() {
-    this.hitPaddle = this.game.physics.arcade.collide(this.ball, this.paddle);
-    this.hitBrick = this.game.physics.arcade.collide(this.ball, this.bricks);
-
-    this.paddle.body.velocity.x = 0;
-
-    const velocity = 500;
-
-    if (this.cursors.left.isDown) {
-      this.paddle.body.velocity.x = -velocity;
-    } else if (this.cursors.right.isDown) {
-      this.paddle.body.velocity.x = velocity;
-    }
-
-    if (this.ball.body.blocked.down) {
-      this.reset();
-    }
-  }
-
-  createBricks() {
-    const brickInfo = {
+    const brickProps = {
       width: 32,
       height: 32,
       paddingTop: 32,
@@ -59,39 +32,90 @@ class GameState extends Phaser.State {
       'purpleBlock',
     ];
 
+    const paddleWidth = 104;
+    const paddleHeight = 24;
+    const paddleOffsetY = 200;
+
+    const paddleProps = {
+      width: paddleWidth,
+      height: paddleHeight,
+      initialX: center.x - (paddleWidth / 2),
+      initialY: center.y + paddleOffsetY,
+    };
+
+    const ballProps = {
+      initialX: center.x,
+      initialY: center.y,
+      initialVelocityX: 0,
+      initialVelocityY: 300,
+    }
+
+    props.center = center;
+    props.brickProps = brickProps;
+    props.brickTypes = brickTypes;
+    props.paddleProps = paddleProps;
+    props.ballProps = ballProps;
+
+    return props;
+  }
+
+  create() {
+    this.props = this.initializeProps();
+
+    this.game.physics.startSystem(Phaser.Physics.ARCADE);
+
+    this.createBricks();
+    this.createBall();
+    this.createPaddle();
+
+    this.cursors = this.game.input.keyboard.createCursorKeys();
+  }
+
+  update() {
+    this.hitPaddle = this.game.physics.arcade.collide(this.ball, this.paddle);
+    this.hitBrick = this.game.physics.arcade.collide(this.ball, this.bricks);
+
+    this.paddle.body.velocity.x = this.props.ballProps.initialVelocityX;
+
+    const velocity = this.props.ballProps.initialVelocityY;
+
+    if (this.cursors.left.isDown) {
+      this.paddle.body.velocity.x = -velocity;
+    } else if (this.cursors.right.isDown) {
+      this.paddle.body.velocity.x = velocity;
+    }
+
+    if (this.ball.body.blocked.down) {
+      this.reset();
+    }
+  }
+
+  createBricks() {
     this.bricks = this.game.add.group();
     this.bricks.enableBody = true;
 
-    for (let i = 0; i < brickTypes.length; i++) {
-      for (let j = 0; j < this.game.width; j += brickInfo.width) {
-        const brick = this.bricks.create(j, i * brickInfo.height + brickInfo.paddingTop, brickTypes[i]);
+    const brickProps = this.props.brickProps;
+
+    for (let i = 0; i < this.props.brickTypes.length; i++) {
+      for (let j = 0; j < this.game.width; j += brickProps.width) {
+        const brick = this.bricks.create(
+          j, i * brickProps.height + brickProps.paddingTop, this.props.brickTypes[i]
+        );
         brick.body.immovable = true;
       }
     }
   }
 
   createBall() {
-    this.ballVelocity = 300;
-
-    this.ball = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY, 'ball');
+    this.ball = this.game.add.sprite(this.props.ballProps.initialX, this.props.ballProps.initialY, 'ball');
     this.game.physics.arcade.enable(this.ball);
     this.ball.body.collideWorldBounds = true;
     this.ball.body.bounce.setTo(1, 1);
-    this.ball.body.velocity.y = this.ballVelocity;
+    this.ball.body.velocity.y = this.props.ballProps.initialVelocityY;
   }
 
   createPaddle() {
-    const paddleInfo = {
-      width: 104,
-      height: 24,
-    };
-
-    const offsetY = 200;
-
-    this.initialPaddleX = this.game.world.centerX - (paddleInfo.width / 2);
-    this.initialPaddleY = this.game.world.centerY + offsetY;
-
-    this.paddle = this.game.add.sprite(this.initialPaddleX, this.initialPaddleY, 'paddle');
+    this.paddle = this.game.add.sprite(this.props.paddleProps.initialX, this.props.paddleProps.initialY, 'paddle');
 
     this.game.physics.arcade.enable(this.paddle);
     this.paddle.body.collideWorldBounds = true;
@@ -99,13 +123,13 @@ class GameState extends Phaser.State {
   }
 
   reset() {
-    this.ball.body.x = this.game.world.centerX;
-    this.ball.body.y = this.game.world.centerY;
-    this.ball.body.velocity.x = 0;
-    this.ball.body.velocity.y = this.ballVelocity;
+    this.ball.body.x = this.props.ballProps.initialX;
+    this.ball.body.y = this.props.ballProps.initialY;
+    this.ball.body.velocity.x = this.props.ballProps.initialVelocityX;
+    this.ball.body.velocity.y = this.props.ballProps.initialVelocityY;
 
-    this.paddle.body.x = this.initialPaddleX;
-    this.paddle.body.y = this.initialPaddleY;
+    this.paddle.body.x = this.props.paddleProps.initialX;
+    this.paddle.body.y = this.props.paddleProps.initialY;
   }
 }
 
