@@ -8,6 +8,7 @@ class GameState extends Phaser.State {
     this.game.load.image('redBlock', 'assets/element_red_square_glossy.png');
     this.game.load.image('yellowBlock', 'assets/element_yellow_square_glossy.png');
     this.game.load.image('greyBlock', 'assets/element_grey_square_glossy.png');
+    this.game.load.image('heart', 'assets/heart.png');
   }
 
   initializeProps() {
@@ -50,13 +51,21 @@ class GameState extends Phaser.State {
       initialY: center.y,
       initialVelocityX: 0,
       initialVelocityY: 300,
-    }
+    };
+
+    const heartProps = {
+      width: 128,
+      height: 128,
+    };
 
     props.center = center;
     props.brickProps = brickProps;
     props.brickTypes = brickTypes;
     props.paddleProps = paddleProps;
     props.ballProps = ballProps;
+    props.lives = 3;
+    props.heartProps = heartProps;
+    props.hearts = [];
 
     return props;
   }
@@ -69,6 +78,7 @@ class GameState extends Phaser.State {
     this.createBricks();
     this.createBall();
     this.createPaddle();
+    this.createHearts();
 
     this.cursors = this.game.input.keyboard.createCursorKeys();
   }
@@ -147,6 +157,16 @@ class GameState extends Phaser.State {
     this.game.physics.arcade.enable(this.paddle);
     this.paddle.body.collideWorldBounds = true;
     this.paddle.body.immovable = true;
+  }
+
+  createHearts() {
+    this.hearts = this.game.add.group();
+    const scaleFactor = this.props.brickProps.width / this.props.heartProps.width;
+    for (let i = 0; i < this.props.lives; i++) {
+      const heart = this.game.add.sprite(i * this.props.heartProps.width * scaleFactor, 0, 'heart');
+      heart.scale.setTo(scaleFactor, scaleFactor);
+      this.props.hearts.push(heart);
+    }
   }
 
   reset() {
