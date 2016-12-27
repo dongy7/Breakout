@@ -9,6 +9,7 @@ class GameState extends Phaser.State {
     this.game.load.image('yellowBlock', 'assets/element_yellow_square_glossy.png');
     this.game.load.image('greyBlock', 'assets/element_grey_square_glossy.png');
     this.game.load.image('heart', 'assets/heart.png');
+    this.game.load.bitmapFont('carrier_command', 'assets/fonts/carrier_command.png', 'assets/fonts/carrier_command.xml');
   }
 
   initializeProps() {
@@ -66,6 +67,7 @@ class GameState extends Phaser.State {
     props.lives = 3;
     props.heartProps = heartProps;
     props.hearts = [];
+    props.score = 0;
 
     return props;
   }
@@ -79,6 +81,7 @@ class GameState extends Phaser.State {
     this.createBall();
     this.createPaddle();
     this.createHearts();
+    this.createScoreText();
 
     this.cursors = this.game.input.keyboard.createCursorKeys();
   }
@@ -100,7 +103,6 @@ class GameState extends Phaser.State {
     if (this.ball.body.blocked.down) {
       this.reset();
     }
-
   }
 
   collideWithPaddle(ball, paddle) {
@@ -124,6 +126,8 @@ class GameState extends Phaser.State {
   }
 
   collideWithBrick(ball, brick) {
+    this.props.score += 10;
+    this.scoreText.text = `Score: ${this.props.score}`;
     brick.kill();
   }
 
@@ -162,11 +166,19 @@ class GameState extends Phaser.State {
   createHearts() {
     this.hearts = this.game.add.group();
     const scaleFactor = this.props.brickProps.width / this.props.heartProps.width;
+    let posX = this.game.width - this.props.brickProps.width;
+
     for (let i = 0; i < this.props.lives; i++) {
-      const heart = this.game.add.sprite(i * this.props.heartProps.width * scaleFactor, 0, 'heart');
+      const heart = this.game.add.sprite(posX, 0, 'heart');
       heart.scale.setTo(scaleFactor, scaleFactor);
       this.props.hearts.push(heart);
+
+      posX -= this.props.brickProps.width;
     }
+  }
+
+  createScoreText() {
+    this.scoreText = this.game.add.bitmapText(0, 0, 'carrier_command', `Score: ${this.props.score}`, 16);
   }
 
   reset() {
