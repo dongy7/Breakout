@@ -71,6 +71,7 @@ class GameState extends Phaser.State {
     this.ball = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY, 'ball');
     this.game.physics.arcade.enable(this.ball);
     this.ball.body.collideWorldBounds = true;
+    this.ball.body.bounce.setTo(1, 1);
     this.ball.body.velocity.y = ballVelocity;
   }
 
