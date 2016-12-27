@@ -170,13 +170,23 @@ class GameState extends Phaser.State {
   }
 
   reset() {
+    // reset ball props
     this.ball.body.x = this.props.ballProps.initialX;
     this.ball.body.y = this.props.ballProps.initialY;
     this.ball.body.velocity.x = this.props.ballProps.initialVelocityX;
     this.ball.body.velocity.y = this.props.ballProps.initialVelocityY;
 
+
+    // reset paddle props
     this.paddle.body.x = this.props.paddleProps.initialX;
     this.paddle.body.y = this.props.paddleProps.initialY;
+
+    // remove a life
+    this.props.lives--;
+    const heart = this.props.hearts.pop();
+    if (heart) {
+      heart.kill();
+    }
   }
 }
 
