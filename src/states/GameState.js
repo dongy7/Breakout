@@ -41,6 +41,8 @@ class GameState extends Phaser.State {
       height: paddleHeight,
       initialX: center.x - (paddleWidth / 2),
       initialY: center.y + paddleOffsetY,
+      segments: 8,
+      segmentAngle: 15,
     };
 
     const ballProps = {
@@ -72,8 +74,8 @@ class GameState extends Phaser.State {
   }
 
   update() {
-    this.hitPaddle = this.game.physics.arcade.collide(this.ball, this.paddle);
     this.hitBrick = this.game.physics.arcade.collide(this.ball, this.bricks);
+    this.game.physics.arcade.overlap(this.ball, this.paddle, this.collideWithPaddle, null, this);
 
     this.paddle.body.velocity.x = this.props.ballProps.initialVelocityX;
 
@@ -88,6 +90,27 @@ class GameState extends Phaser.State {
     if (this.ball.body.blocked.down) {
       this.reset();
     }
+
+  }
+
+  collideWithPaddle(ball, paddle) {
+    const { paddleProps, ballProps } = this.props;
+    const segmentWidth = paddleProps.width / paddleProps.segments;
+
+    let segmentHit = Math.floor((ball.x - paddle.x) / segmentWidth);
+
+    if (segmentHit > paddleProps.segments - 1) {
+      segmentHit = paddleProps.segments - 1;
+    } else if (segmentHit < 0) {
+      segmentHit = 0;
+    }
+
+    segmentHit = -(paddleProps.segments / 2) + segmentHit;
+
+    // -90 degrees points up
+    // interpolate between -135 degrees and -45 degrees
+    const returnAngle = -90 + (segmentHit * paddleProps.segmentAngle);
+    this.game.physics.arcade.velocityFromAngle(returnAngle, ballProps.initialVelocityY, this.ball.body.velocity);
   }
 
   createBricks() {
