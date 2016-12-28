@@ -182,22 +182,6 @@ class GameState extends Phaser.State {
     }
   }
 
-  createBall() {
-    this.ball = this.game.add.sprite(this.props.ballProps.initialX, this.props.ballProps.initialY, 'ball');
-    this.game.physics.arcade.enable(this.ball);
-    this.ball.body.collideWorldBounds = true;
-    this.ball.body.bounce.setTo(1, 1);
-    this.ball.body.velocity.y = this.props.ballProps.initialVelocityY;
-  }
-
-  createPaddle() {
-    this.paddle = this.game.add.sprite(this.props.paddleProps.initialX, this.props.paddleProps.initialY, 'paddle');
-
-    this.game.physics.arcade.enable(this.paddle);
-    this.paddle.body.collideWorldBounds = true;
-    this.paddle.body.immovable = true;
-  }
-
   createHearts() {
     if (this.hearts) {
       this.hearts.destroy();
