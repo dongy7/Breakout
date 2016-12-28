@@ -1,20 +1,28 @@
-# Phaser ES6 Boilerplate
+# Breakout
+
+## Pre-requisites
+
+You need to install [Node](https://nodejs.org/) to develop the game.
+
+First install the dependencies for the project:
+
+```sh
+$ npm install
+```
 
 ## Usage
 
-You need [Node.js and npm](https://nodejs.org/).
+To run the dev version:
 
-Install dependencies
+```sh
+$ npm start
+```
 
-`npm install`
 
-Run a development build...
-
-`npm start`
-
-...or a production build.
-
-`npm run production`
+To run the production version:
+```sh
+$ npm run production
+```
 
 Development builds will copy `phaser.min.js` together with `phaser.map` and `phaser.js`
 Your ES6 code will be transpiled into ES5 and concatenated into a single file.
