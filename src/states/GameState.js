@@ -15,7 +15,7 @@ class GameState extends Phaser.State {
   initializeProps() {
     const props = {};
 
-		const center = {
+    const center = {
       x: this.game.world.centerX,
       y: this.game.world.centerY
     };
