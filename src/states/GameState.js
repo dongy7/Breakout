@@ -1,5 +1,6 @@
 import Ball from '../objects/ball';
 import Paddle from '../objects/paddle';
+import Brick from '../objects/brick';
 
 class GameState extends Phaser.State {
   preload() {
@@ -167,14 +168,16 @@ class GameState extends Phaser.State {
     this.bricks = this.game.add.group();
     this.bricks.enableBody = true;
 
-    const brickProps = this.props.brickProps;
+    const { brickProps } = this.props;
 
     for (let i = 0; i < this.props.brickTypes.length; i++) {
       for (let j = 0; j < this.game.width; j += brickProps.width) {
-        const brick = this.bricks.create(
-          j, i * brickProps.height + brickProps.paddingTop, this.props.brickTypes[i]
-        );
-        brick.body.immovable = true;
+        this.bricks.add(new Brick({
+          game: this.game,
+          x: j,
+          y: i * brickProps.height,
+          asset: this.props.brickTypes[i],
+        }));
       }
     }
   }
