@@ -133,10 +133,6 @@ class GameState extends Phaser.State {
     } else if (this.cursors.right.isDown) {
       this.paddle.body.velocity.x = velocity;
     }
-
-    if (this.ball.body.blocked.down) {
-      this.reset(false);
-    }
   }
 
   collideWithPaddle(ball, paddle) {
@@ -168,54 +164,6 @@ class GameState extends Phaser.State {
     if (this.props.destroyed === this.props.brickCount) {
       this.showVictory();
     }
-  }
-
-  createBricks() {
-    if (this.bricks) {
-      this.bricks.destroy(true);
-    }
-
-    this.bricks = this.game.add.group();
-    this.bricks.enableBody = true;
-
-    const { brickProps } = this.props;
-
-    for (let i = 0; i < this.props.brickTypes.length; i++) {
-      for (let j = 0; j < this.game.width; j += brickProps.width) {
-        this.bricks.add(new Brick({
-          game: this.game,
-          x: j,
-          y: (i + 1) * brickProps.height,
-          asset: this.props.brickTypes[i],
-        }));
-      }
-    }
-  }
-
-  createHearts() {
-    if (this.hearts) {
-      this.hearts.destroy();
-    }
-
-    this.hearts = this.game.add.group();
-    const scaleFactor = this.props.brickProps.width / this.props.heartProps.width;
-    let posX = this.game.width - this.props.brickProps.width;
-
-    for (let i = 0; i < this.props.lives; i++) {
-      const heart = this.game.add.sprite(posX, 0, 'heart');
-      heart.scale.setTo(scaleFactor, scaleFactor);
-      this.props.hearts.push(heart);
-
-      posX -= this.props.brickProps.width;
-    }
-  }
-
-  createScoreText() {
-    if (this.scoreText) {
-      this.scoreText.destroy(true);
-    }
-
-    this.scoreText = this.game.add.bitmapText(0, 0, 'carrier_command', `Score: ${this.props.score}`, 16);
   }
 
   reset(shouldRestart) {
