@@ -51,7 +51,7 @@ class GameState extends Phaser.State {
       initialX: center.x,
       initialY: center.y,
       initialVelocityX: 0,
-      initialVelocityY: 300,
+      initialVelocityY: 500,
     };
 
     const heartProps = {
@@ -68,6 +68,8 @@ class GameState extends Phaser.State {
     props.heartProps = heartProps;
     props.hearts = [];
     props.score = 0;
+    props.destroyed = 0;
+    props.brickCount = (this.game.width / brickProps.width) * brickTypes.length;
 
     return props;
   }
@@ -126,12 +128,21 @@ class GameState extends Phaser.State {
   }
 
   collideWithBrick(ball, brick) {
+    this.props.destroyed++;
     this.props.score += 10;
     this.scoreText.text = `Score: ${this.props.score}`;
     brick.kill();
+
+    if (this.props.destroyed === this.props.brickCount) {
+      this.showVictory();
+    }
   }
 
   createBricks() {
+    if (this.bricks) {
+      this.bricks.destroy(true);
+    }
+
     this.bricks = this.game.add.group();
     this.bricks.enableBody = true;
 
@@ -164,6 +175,10 @@ class GameState extends Phaser.State {
   }
 
   createHearts() {
+    if (this.hearts) {
+      this.hearts.destroy();
+    }
+
     this.hearts = this.game.add.group();
     const scaleFactor = this.props.brickProps.width / this.props.heartProps.width;
     let posX = this.game.width - this.props.brickProps.width;
@@ -178,6 +193,10 @@ class GameState extends Phaser.State {
   }
 
   createScoreText() {
+    if (this.scoreText) {
+      this.scoreText.destroy(true);
+    }
+
     this.scoreText = this.game.add.bitmapText(0, 0, 'carrier_command', `Score: ${this.props.score}`, 16);
   }
 
@@ -194,7 +213,11 @@ class GameState extends Phaser.State {
 
     if (shouldRestart) {
       this.props.lives = 3;
+      this.props.destroyed = 0;
+      this.props.score = 0;
       this.createHearts();
+      this.createBricks();
+      this.createScoreText();
     } else {
       // remove a life
       this.props.lives--;
@@ -215,11 +238,19 @@ class GameState extends Phaser.State {
       this.props.center.x, this.props.center.y, 'carrier_command', 'Game Over', 32
     );
     this.endText.anchor.setTo(0.5, 0.5);
-    this.game.input.onDown.addOnce(this.restart, this);
+    this.game.input.onDown.addOnce(this.restart.bind(this, this.endText), this);
   }
 
-  restart() {
-    this.endText.destroy();
+  showVictory() {
+    this.victoryText = this.game.add.bitmapText(
+      this.props.center.x, this.props.center.y, 'carrier_command', 'You Win', 32
+    );
+    this.victoryText.anchor.setTo(0.5, 0.5);
+    this.game.input.onDown.addOnce(this.restart.bind(this, this.victoryText), this);
+  }
+
+  restart(text) {
+    text.destroy();
     this.reset(true);
   }
 }
