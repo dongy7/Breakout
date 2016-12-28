@@ -1,4 +1,5 @@
 import Ball from '../objects/ball';
+import Paddle from '../objects/paddle';
 
 class GameState extends Phaser.State {
   preload() {
@@ -89,10 +90,17 @@ class GameState extends Phaser.State {
       initialVelocityY: this.props.ballProps.initialVelocityY,
     });
 
+    this.paddle = new Paddle({
+      game: this.game,
+      x: this.props.paddleProps.initialX,
+      y: this.props.paddleProps.initialY,
+      asset: 'paddle',
+    });
+
     this.game.add.existing(this.ball);
+    this.game.add.existing(this.paddle);
 
     this.createBricks();
-    this.createPaddle();
     this.createHearts();
     this.createScoreText();
 
