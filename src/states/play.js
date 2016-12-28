@@ -132,6 +132,9 @@ class Play extends Phaser.State {
 
     if (this.ball.body.blocked.down) {
       this.hud.removeLife();
+      if (this.hud.getLivesLeft() === 0) {
+        this.state.start('over');
+      }
     }
   }
 
