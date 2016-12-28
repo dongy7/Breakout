@@ -1,6 +1,7 @@
 import Ball from '../objects/ball';
 import Paddle from '../objects/paddle';
 import Brick from '../objects/brick';
+import Hud from '../objects/hud';
 
 class GameState extends Phaser.State {
   preload() {
@@ -98,12 +99,17 @@ class GameState extends Phaser.State {
       asset: 'paddle',
     });
 
-    this.game.add.existing(this.ball);
-    this.game.add.existing(this.paddle);
+    this.hud = new Hud({
+      game: this.game,
+      font: 'carrier_command',
+    });
 
     this.createBricks();
-    this.createHearts();
-    this.createScoreText();
+
+    this.game.add.existing(this.ball);
+    this.game.add.existing(this.paddle);
+    this.game.add.existing(this.hud);
+
 
     this.cursors = this.game.input.keyboard.createCursorKeys();
 
@@ -175,7 +181,7 @@ class GameState extends Phaser.State {
         this.bricks.add(new Brick({
           game: this.game,
           x: j,
-          y: i * brickProps.height,
+          y: (i + 1) * brickProps.height,
           asset: this.props.brickTypes[i],
         }));
       }
