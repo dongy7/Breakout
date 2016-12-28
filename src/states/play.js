@@ -3,7 +3,7 @@ import Paddle from '../objects/paddle';
 import Hud from '../objects/hud';
 import BrickRow from '../objects/brickRows';
 
-class GameState extends Phaser.State {
+class Play extends Phaser.State {
   preload() {
     this.game.load.image('ball', 'assets/ballGrey.png');
     this.game.load.image('paddle', 'assets/paddleBlu.png');
@@ -69,11 +69,7 @@ class GameState extends Phaser.State {
     props.brickTypes = brickTypes;
     props.paddleProps = paddleProps;
     props.ballProps = ballProps;
-    props.lives = 3;
     props.heartProps = heartProps;
-    props.hearts = [];
-    props.score = 0;
-    props.destroyed = 0;
     props.brickCount = (this.game.width / brickProps.width) * brickTypes.length;
 
     return props;
@@ -161,4 +157,4 @@ class GameState extends Phaser.State {
   }
 }
 
-export default GameState;
+export default Play;
