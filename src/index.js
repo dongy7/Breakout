@@ -1,5 +1,5 @@
-import Play from './states/Play';
-import Over from './states/Over';
+import Play from './states/play';
+import Over from './states/over';
 
 class Game extends Phaser.Game {
   constructor() {
