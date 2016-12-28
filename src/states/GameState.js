@@ -121,7 +121,7 @@ class GameState extends Phaser.State {
   }
 
   update() {
-    this.hitBrick = this.game.physics.arcade.collide(this.ball, this.bricks, this.collideWithBrick, null, this);
+    this.game.physics.arcade.collide(this.ball, this.brickRows, this.collideWithBrick, null, this);
     this.game.physics.arcade.overlap(this.ball, this.paddle, this.collideWithPaddle, null, this);
 
     this.paddle.body.velocity.x = this.props.ballProps.initialVelocityX;
@@ -156,14 +156,8 @@ class GameState extends Phaser.State {
   }
 
   collideWithBrick(ball, brick) {
-    this.props.destroyed++;
-    this.props.score += 10;
-    this.scoreText.text = `Score: ${this.props.score}`;
+    this.hud.updateScore();
     brick.kill();
-
-    if (this.props.destroyed === this.props.brickCount) {
-      this.showVictory();
-    }
   }
 }
 

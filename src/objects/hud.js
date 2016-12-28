@@ -33,6 +33,11 @@ class Hud extends Phaser.Group {
 
     return hearts;
   }
+
+  updateScore() {
+    this.score += 10;
+    this.scoreText.text = this.scoreLabel + this.score;
+  }
 }
 
 export default Hud;
