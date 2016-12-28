@@ -6,4 +6,5 @@ cache:
   yarn: true
 
 script:
+  bash config.sh
   npm run deploy
