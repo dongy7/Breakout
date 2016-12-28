@@ -1,7 +1,7 @@
 import Ball from '../objects/ball';
 import Paddle from '../objects/paddle';
-import Brick from '../objects/brick';
 import Hud from '../objects/hud';
+import BrickRow from '../objects/brickRows';
 
 class GameState extends Phaser.State {
   preload() {
@@ -104,12 +104,16 @@ class GameState extends Phaser.State {
       font: 'carrier_command',
     });
 
-    this.createBricks();
+    this.brickRows = new BrickRow({
+      game: this.game,
+      brickTypes: this.props.brickTypes,
+      brickProps: this.props.brickProps,
+    });
 
     this.game.add.existing(this.ball);
     this.game.add.existing(this.paddle);
     this.game.add.existing(this.hud);
-
+    this.game.add.existing(this.brickRows);
 
     this.cursors = this.game.input.keyboard.createCursorKeys();
 
