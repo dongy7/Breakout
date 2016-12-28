@@ -1,3 +1,5 @@
+import Ball from '../objects/ball';
+
 class GameState extends Phaser.State {
   preload() {
     this.game.load.image('ball', 'assets/ballGrey.png');
@@ -79,13 +81,24 @@ class GameState extends Phaser.State {
 
     this.game.physics.startSystem(Phaser.Physics.ARCADE);
 
+    this.ball = new Ball({
+      game: this.game,
+      x: this.props.ballProps.initialX,
+      y: this.props.ballProps.initialY,
+      asset: 'ball',
+      initialVelocityY: this.props.ballProps.initialVelocityY,
+    });
+
+    this.game.add.existing(this.ball);
+
     this.createBricks();
-    this.createBall();
     this.createPaddle();
     this.createHearts();
     this.createScoreText();
 
     this.cursors = this.game.input.keyboard.createCursorKeys();
+
+    this.ball.start();
   }
 
   update() {
