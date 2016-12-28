@@ -18,10 +18,14 @@ To run the dev version:
 $ npm start
 ```
 
-
 To run the production version:
 ```sh
 $ npm run production
+```
+
+To deploy the game to Github Pages:
+```sh
+$ npm run deploy
 ```
 
 Development builds will copy `phaser.min.js` together with `phaser.map` and `phaser.js`
