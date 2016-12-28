@@ -165,60 +165,6 @@ class GameState extends Phaser.State {
       this.showVictory();
     }
   }
-
-  reset(shouldRestart) {
-    // reset ball props
-    this.ball.body.x = this.props.ballProps.initialX;
-    this.ball.body.y = this.props.ballProps.initialY;
-    this.ball.body.velocity.x = this.props.ballProps.initialVelocityX;
-    this.ball.body.velocity.y = this.props.ballProps.initialVelocityY;
-
-    // reset paddle props
-    this.paddle.body.x = this.props.paddleProps.initialX;
-    this.paddle.body.y = this.props.paddleProps.initialY;
-
-    if (shouldRestart) {
-      this.props.lives = 3;
-      this.props.destroyed = 0;
-      this.props.score = 0;
-      this.createHearts();
-      this.createBricks();
-      this.createScoreText();
-    } else {
-      // remove a life
-      this.props.lives--;
-      const heart = this.props.hearts.pop();
-      if (heart) {
-        heart.kill();
-      }
-
-      if (this.props.lives === 0) {
-        this.endGame();
-      }
-    }
-  }
-
-  endGame() {
-    this.ball.body.velocity.y = 0;
-    this.endText = this.game.add.bitmapText(
-      this.props.center.x, this.props.center.y, 'carrier_command', 'Game Over', 32
-    );
-    this.endText.anchor.setTo(0.5, 0.5);
-    this.game.input.onDown.addOnce(this.restart.bind(this, this.endText), this);
-  }
-
-  showVictory() {
-    this.victoryText = this.game.add.bitmapText(
-      this.props.center.x, this.props.center.y, 'carrier_command', 'You Win', 32
-    );
-    this.victoryText.anchor.setTo(0.5, 0.5);
-    this.game.input.onDown.addOnce(this.restart.bind(this, this.victoryText), this);
-  }
-
-  restart(text) {
-    text.destroy();
-    this.reset(true);
-  }
 }
 
 export default GameState;
