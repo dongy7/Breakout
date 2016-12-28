@@ -38,6 +38,15 @@ class Hud extends Phaser.Group {
     this.score += 10;
     this.scoreText.text = this.scoreLabel + this.score;
   }
+
+  removeLife() {
+    this.lives--;
+    this.hearts.children[0].destroy();
+  }
+
+  getLivesLeft() {
+    return this.lives;
+  }
 }
 
 export default Hud;

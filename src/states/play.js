@@ -129,6 +129,10 @@ class Play extends Phaser.State {
     } else if (this.cursors.right.isDown) {
       this.paddle.body.velocity.x = velocity;
     }
+
+    if (this.ball.body.blocked.down) {
+      this.hud.removeLife();
+    }
   }
 
   collideWithPaddle(ball, paddle) {
